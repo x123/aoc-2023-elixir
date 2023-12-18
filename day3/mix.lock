@@ -1,0 +1,7 @@
+%{
+  "ex_maybe": {:hex, :ex_maybe, "1.1.1", "95c0188191b43bd278e876ae4f0a688922e3ca016a9efd97ee7a0b741a61b899", [:mix], [], "hexpm", "1af8c78c915c7f119a513b300a1702fc5cc9fed42d54fd85995265e4c4b763d2"},
+  "exprintf": {:hex, :exprintf, "0.2.1", "b7e895dfb00520cfb7fc1671303b63b37dc3897c59be7cbf1ae62f766a8a0314", [:mix], [], "hexpm", "20a0e8c880be90e56a77fcc82533c5d60c643915c7ce0cc8aa1e06ed6001da28"},
+  "matrix": {:hex, :matrix, "0.3.2", "9c826bc3a1117bf5e1c5cdcf3a3d95456c93bc2e127a04e363e9fc90b724f784", [:mix], [{:exprintf, "~> 0.1", [hex: :exprintf, repo: "hexpm", optional: false]}], "hexpm", "f75adeb594a877ff49ff58a402e37c9474fb9172c997427a9b4b57ab10100f15"},
+  "matrix_reloaded": {:hex, :matrix_reloaded, "2.3.0", "eea41bc6713021f8f51dde0c2d6b72e695a99098753baebf0760e10aed8fa777", [:mix], [{:ex_maybe, "~> 1.0", [hex: :ex_maybe, repo: "hexpm", optional: false]}, {:result, "~> 1.7", [hex: :result, repo: "hexpm", optional: false]}], "hexpm", "4013c0cebe5dfffc8f2316675b642fb2f5a1dfc4bdc40d2c0dfa0563358fa496"},
+  "result": {:hex, :result, "1.7.2", "a57c569f7cf5c158d2299d3b5624a48b69bd1520d0771dc711bcf9f3916e8ab6", [:mix], [], "hexpm", "89f98e98cfbf64237ecf4913aa36b76b80463e087775d19953dc4b435a35f087"},
+}
