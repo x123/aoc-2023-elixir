@@ -12,16 +12,22 @@ defmodule Day3.Matrix do
     end)
   end
 
-  def find_part_locations(matrix) do
+  def find_part_locations(matrix, opts \\ [debug: false]) do
     matrix.contents
     |> Enum.with_index()
     |> Enum.map(fn {content, row_index} ->
-      # IO.puts("row_index:#{row_index} content:#{inspect content}")
+      if(opts[:debug],
+        do: IO.puts("row_index:#{row_index} content:#{inspect(content)}")
+      )
+
       content
       |> Enum.with_index()
       |> Enum.map(fn {char, col_index} ->
         if char in @part_symbols do
-          # IO.puts("part_symbol #{inspect(char)} found at {#{row_index},#{col_index}}")
+          if(opts[:debug],
+            do: IO.puts("part_symbol #{inspect(char)} found at {#{row_index},#{col_index}}")
+          )
+
           {row_index, col_index}
         end
       end)
