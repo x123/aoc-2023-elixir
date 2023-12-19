@@ -24,3 +24,6 @@ day3-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Ignore escript build
+day3

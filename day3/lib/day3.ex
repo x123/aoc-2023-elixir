@@ -1,5 +1,8 @@
 defmodule Day3.Matrix do
-  defstruct contents: []
+  defstruct [
+    contents: [],
+    dimensions: {},
+  ]
 end
 
 defmodule Day3 do
@@ -27,7 +30,11 @@ defmodule Day3 do
   end
 
   defp process_input(input) do
-    String.split(input, "\n", trim: true)
+    if input do
+      String.split(input, "\n", trim: true)
+    else
+      raise("no input to process, try using --file someinput.txt")
+    end
   end
 
   defp debug_print(input) do
@@ -36,21 +43,16 @@ defmodule Day3 do
   end
 
   defp load_matrix(lines) do
-    # {rows, cols} = get_input_dimensions(lines)
-
-    # m = MatrixReloaded.Matrix.new({rows, cols})
-    m = %Day3.Matrix{
+    %Day3.Matrix{
       contents:
         Enum.map(lines, fn line ->
           String.graphemes(line)
-        end)
+        end),
+      dimensions: {
+        length(lines),
+        hd(lines) |> String.graphemes() |> length()
+      }
     }
-  end
-
-  defp get_input_dimensions(lines) do
-    rows = length(lines)
-    cols = hd(lines) |> String.graphemes() |> length()
-    {rows, cols}
   end
 
   defp parse_args(args) do
