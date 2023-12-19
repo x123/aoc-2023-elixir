@@ -1,8 +1,47 @@
 defmodule Day3.Matrix do
-  defstruct [
-    contents: [],
-    dimensions: {},
-  ]
+  @part_symbols ["*", "#", "+", "$"]
+  defstruct contents: [],
+            dimensions: {},
+            part_locations: []
+
+  def pretty_print(matrix) do
+    Enum.each(matrix.contents, fn contents ->
+      contents
+      |> Enum.join("")
+      |> IO.puts()
+    end)
+  end
+
+  def find_part_locations(matrix) do
+    matrix.contents
+    |> Enum.with_index()
+    |> Enum.map(fn {content, row_index} ->
+      # IO.puts("row_index:#{row_index} content:#{inspect content}")
+      content
+      |> Enum.with_index()
+      |> Enum.map(fn {char, col_index} ->
+        if char in @part_symbols do
+          # IO.puts("part_symbol #{inspect(char)} found at {#{row_index},#{col_index}}")
+          {row_index, col_index}
+        end
+      end)
+    end)
+    |> List.flatten()
+    |> Enum.filter(& &1)
+  end
+end
+
+defimpl Inspect, for: Day3.Matrix do
+  def inspect(matrix, opts) do
+    Enum.join(
+      [
+        "dimensions: #{inspect(matrix.dimensions)}",
+        "part_locations: #{inspect(matrix.part_locations)}",
+        Enum.join(matrix.contents, "\n")
+      ],
+      "\n"
+    )
+  end
 end
 
 defmodule Day3 do
@@ -14,13 +53,22 @@ defmodule Day3 do
   Main executable function.
   """
   def main(args \\ []) do
-    args
-    |> parse_args()
-    |> load_file()
-    |> process_input()
-    |> debug_print()
-    |> load_matrix()
-    |> debug_print()
+    matrix =
+      args
+      |> parse_args()
+      |> load_file()
+      |> process_input()
+      |> load_matrix()
+
+    # Day3.Matrix.pretty_print(matrix)
+
+    matrix =
+      %{
+        matrix
+        | part_locations: Day3.Matrix.find_part_locations(matrix)
+      }
+
+    debug_print(matrix)
   end
 
   defp load_file({opts, word}) do
