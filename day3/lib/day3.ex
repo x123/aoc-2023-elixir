@@ -1,8 +1,9 @@
 defmodule Day3.Matrix do
-  @part_symbols ["*", "#", "+", "$"]
+  @part_symbols ["*", "+", "#", "%", "&", "-", "/", "=", "@", "$"]
   defstruct contents: [],
             dimensions: {},
-            part_locations: []
+            part_locations: [],
+            numbers: []
 
   def pretty_print(matrix) do
     Enum.each(matrix.contents, fn contents ->
@@ -10,6 +11,80 @@ defmodule Day3.Matrix do
       |> Enum.join("")
       |> IO.puts()
     end)
+  end
+
+  def find_part_numbers(matrix, opts \\ [debug: false]) do
+    matrix.numbers
+    |> Enum.map(fn number ->
+      if(opts[:debug],
+        do: IO.puts("> number:#{inspect(number)}")
+      )
+        matrix.part_locations
+        |> Enum.filter(
+          &(
+            (
+              elem(&1, 0) == number.pos.row
+              || elem(&1, 0) + 1 == number.pos.row
+              || elem(&1, 0) - 1 == number.pos.row
+            )
+            &&
+              (elem(&1, 1) in (number.pos.col - 1)..(number.pos.col + number.length))
+          )
+        )
+        |> Enum.map(fn part_location ->
+          if(opts[:debug],
+            do: IO.puts(">> part_location:#{inspect(part_location)} number:#{inspect number}")
+          )
+          number.number
+        end)
+    end)
+    |> List.flatten()
+  end
+
+  def find_numbers(matrix, opts \\ [debug: false]) do
+    matrix.contents
+    |> Enum.with_index()
+    |> Enum.map(fn {content, row_index} ->
+      line = Enum.join(content)
+      result = Regex.scan(~r/\d+/, line, return: :index) |> List.flatten()
+
+      if(opts[:debug],
+        do: IO.puts("> result:#{inspect(result)}")
+      )
+
+      cond do
+        length(result) > 0 ->
+          {result, row_index, line}
+
+        true ->
+          nil
+      end
+    end)
+    |> Enum.filter(& &1)
+    |> Enum.map(fn {positions, row_index, line} ->
+      if(opts[:debug],
+        do:
+          IO.puts(
+            ">> row_index:#{inspect(row_index)} positions:#{inspect(positions)} line:#{inspect(line)}"
+          )
+      )
+
+      Enum.map(positions, fn position ->
+        {col_index, length} = position
+        number = String.slice(line, col_index, length) |> String.to_integer()
+
+        if(opts[:debug],
+          do:
+            IO.puts(
+              ">>> position:{#{inspect(row_index)},#{col_index}} length:#{inspect(length)} number:#{inspect(number)}"
+            )
+        )
+
+        %{pos: %{row: row_index, col: col_index}, length: length, number: number}
+      end)
+      |> List.flatten()
+    end)
+    |> List.flatten()
   end
 
   def find_part_locations(matrix, opts \\ [debug: false]) do
@@ -43,6 +118,7 @@ defimpl Inspect, for: Day3.Matrix do
       [
         "dimensions: #{inspect(matrix.dimensions)}",
         "part_locations: #{inspect(matrix.part_locations)}",
+        "numbers: #{inspect(matrix.numbers)}",
         Enum.join(matrix.contents, "\n")
       ],
       "\n"
@@ -66,15 +142,16 @@ defmodule Day3 do
       |> process_input()
       |> load_matrix()
 
-    # Day3.Matrix.pretty_print(matrix)
-
     matrix =
       %{
         matrix
-        | part_locations: Day3.Matrix.find_part_locations(matrix)
+        | part_locations: Day3.Matrix.find_part_locations(matrix, debug: false),
+          numbers: Day3.Matrix.find_numbers(matrix, debug: false)
       }
 
-    debug_print(matrix)
+    part_numbers = Day3.Matrix.find_part_numbers(matrix, debug: false)
+    part_number_sum = Enum.sum(part_numbers)
+    IO.puts("Day 3-1 Answer:#{part_number_sum}")
   end
 
   defp load_file({opts, word}) do
